@@ -92,3 +92,13 @@ CI runs 6 required checks on every PR: Rustfmt, Clippy, Tests (ubuntu + macOS), 
 ## License
 
 MIT
+
+## Windows installation builds (fork)
+
+Run **Windows Install Artifact** in GitHub Actions. It requires the security
+audit and all upstream CI jobs, then runs Windows Clippy, tests and a locked
+release build. Download `rust-lean-mcp-windows-x64` and verify `SHA256SUMS` before
+installing the executable. Lean 4 and Lake must be available to the MCP process.
+The fork refreshes vulnerable locked dependencies, explicitly selects the
+instance tool router with newer rmcp, and encodes native paths as file URIs.
+All dependency restoration and compilation happen on GitHub-hosted runners.

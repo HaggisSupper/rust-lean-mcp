@@ -207,6 +207,16 @@ mod tests {
     use pretty_assertions::assert_eq;
     use serde_json::json;
 
+    #[test]
+    fn test_native_path_uri_roundtrip_with_spaces() {
+        let dir = tempfile::tempdir().unwrap();
+        let uri = path_to_uri(dir.path(), "proof file.lean");
+        assert!(uri.starts_with("file:///"));
+        assert!(uri.contains("proof%20file.lean"));
+        assert!(!uri.contains('\\'));
+        assert_eq!(uri_to_path(&uri), Some(dir.path().join("proof file.lean")));
+    }
+
     // ── LspClientError Display tests ────────────────────────────────────
 
     #[test]
