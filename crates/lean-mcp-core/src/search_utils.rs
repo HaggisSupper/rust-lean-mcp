@@ -133,6 +133,7 @@ pub fn lean_local_search(
         "!.git/**",
         "-g",
         "!.lake/build/**",
+        "-g",
         "!**/.lake/build/**",
         &pattern,
     ];

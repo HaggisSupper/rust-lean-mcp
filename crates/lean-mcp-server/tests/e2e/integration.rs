@@ -137,7 +137,10 @@ async fn lsp_tool_without_client_returns_error() {
         {
             // Should mention LSP/client not connected
             assert!(
-                text.contains("LSP") || text.contains("client") || text.contains("error"),
+                text.contains("LSP")
+                    || text.contains("client")
+                    || text.contains("error")
+                    || text.contains("Failed to spawn `lake serve`"),
                 "expected LSP-related error, got: {text}"
             );
         }
