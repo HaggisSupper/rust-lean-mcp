@@ -595,7 +595,7 @@ mod tests {
 
         let result = Repl::find_repl_binary(tmp.path());
         assert!(result.is_some());
-        assert!(result.unwrap().contains(".lake/packages/repl"));
+        assert!(Path::new(&result.unwrap()).starts_with(tmp.path().join(".lake/packages/repl")));
     }
 
     #[test]

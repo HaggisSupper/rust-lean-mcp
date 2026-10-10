@@ -102,3 +102,6 @@ installing the executable. Lean 4 and Lake must be available to the MCP process.
 The fork refreshes vulnerable locked dependencies, explicitly selects the
 instance tool router with newer rmcp, and encodes native paths as file URIs.
 All dependency restoration and compilation happen on GitHub-hosted runners.
+
+Windows search results use forward slashes consistently, build artifact searches
+exclude absolute build paths, and cache tests follow the platform cache location.

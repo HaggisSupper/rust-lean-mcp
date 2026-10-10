@@ -852,7 +852,14 @@ mod tests {
             &["LEAN_LOOGLE_CACHE_DIR"],
             || {
                 let dir = get_cache_dir();
-                assert_eq!(dir, PathBuf::from("/xdg/cache/lean-lsp-mcp/loogle"));
+                if cfg!(windows) {
+                    let base = std::env::var("LOCALAPPDATA")
+                        .map(PathBuf::from)
+                        .unwrap_or_else(|_| dirs_fallback_home().join("AppData/Local"));
+                    assert_eq!(dir, base.join("lean-lsp-mcp/loogle"));
+                } else {
+                    assert_eq!(dir, PathBuf::from("/xdg/cache/lean-lsp-mcp/loogle"));
+                }
             },
         );
     }
@@ -861,7 +868,7 @@ mod tests {
     fn cache_dir_default_fallback() {
         with_env_vars(&[], &["LEAN_LOOGLE_CACHE_DIR", "XDG_CACHE_HOME"], || {
             let dir = get_cache_dir();
-            assert!(dir.to_string_lossy().ends_with("lean-lsp-mcp/loogle"));
+            assert!(dir.ends_with(Path::new("lean-lsp-mcp/loogle")));
         });
     }
 

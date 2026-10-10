@@ -133,6 +133,7 @@ pub fn lean_local_search(
         "!.git/**",
         "-g",
         "!.lake/build/**",
+        "!**/.lake/build/**",
         &pattern,
     ];
 
@@ -277,15 +278,12 @@ struct ScoredResult {
 ///
 /// If the path is already relative or cannot be made relative, returns it as-is.
 fn make_relative_path(project_root: &Path, file_path: &str) -> String {
-    let p = Path::new(file_path);
-    if p.is_absolute() {
-        match p.strip_prefix(project_root) {
-            Ok(relative) => relative.to_string_lossy().to_string(),
-            Err(_) => file_path.to_string(),
-        }
-    } else {
-        file_path.to_string()
-    }
+    let normalized_root = project_root.to_string_lossy().replace('\\', "/");
+    let normalized_file = file_path.replace('\\', "/");
+    normalized_file
+        .strip_prefix(&format!("{}/", normalized_root.trim_end_matches('/')))
+        .unwrap_or(&normalized_file)
+        .to_string()
 }
 
 /// Get the Lean stdlib source directory, if available.

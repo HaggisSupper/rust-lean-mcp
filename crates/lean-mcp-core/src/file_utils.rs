@@ -20,7 +20,7 @@ pub fn get_relative_file_path(project_path: &Path, file_path: &str) -> Option<St
     if fp.is_absolute() {
         if fp.exists() {
             if let Ok(rel) = fp.strip_prefix(project_path) {
-                return Some(rel.to_string_lossy().into_owned());
+                return Some(rel.to_string_lossy().replace('\\', "/"));
             }
         }
         return None;
@@ -37,7 +37,7 @@ pub fn get_relative_file_path(project_path: &Path, file_path: &str) -> Option<St
         let abs = cwd.join(fp);
         if abs.exists() {
             if let Ok(rel) = abs.strip_prefix(project_path) {
-                return Some(rel.to_string_lossy().into_owned());
+                return Some(rel.to_string_lossy().replace('\\', "/"));
             }
         }
     }
