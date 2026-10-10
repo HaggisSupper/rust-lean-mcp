@@ -128,7 +128,7 @@ fn extract_prefix(content: &str, line: u32, column: u32) -> String {
 fn sort_completions(items: &mut [CompletionItem], prefix: &str) {
     if prefix.is_empty() {
         // No prefix: sort alphabetically.
-        items.sort_by(|a, b| a.label.to_lowercase().cmp(&b.label.to_lowercase()));
+        items.sort_by_key(|a| a.label.to_lowercase());
     } else {
         items.sort_by(|a, b| {
             let a_lower = a.label.to_lowercase();
