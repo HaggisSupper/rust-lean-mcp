@@ -1,0 +1,41 @@
+name: Windows Install Artifact
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+  ci:
+    uses: ./.github/workflows/ci.yml
+  windows:
+    needs: [audit, ci]
+    runs-on: windows-latest
+    env:
+      RUSTFLAGS: '-D warnings'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - run: cargo test --locked --workspace
+      - run: cargo build --locked --release -p lean-mcp-server
+      - run: ./target/release/rust-lean-mcp.exe --help
+      - shell: pwsh
+        run: |
+          Get-FileHash target/release/rust-lean-mcp.exe -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  rust-lean-mcp.exe" } | Set-Content SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-lean-mcp-windows-x64
+          path: |
+            target/release/rust-lean-mcp.exe
+            SHA256SUMS
+            LICENSE
+          if-no-files-found: error
