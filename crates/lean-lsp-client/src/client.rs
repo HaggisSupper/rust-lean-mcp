@@ -185,14 +185,20 @@ pub trait LspClient: Send + Sync {
 /// Convert a relative file path to a `file://` URI.
 pub fn path_to_uri(project_path: &Path, relative_path: &str) -> String {
     let abs = project_path.join(relative_path);
-    format!("file://{}", abs.display())
+    url::Url::from_file_path(&abs)
+        .map(|uri| uri.to_string())
+        .unwrap_or_else(|()| format!("file://{}", abs.display().to_string().replace('\\', "/")))
 }
 
 /// Convert a `file://` URI back to an absolute [`PathBuf`].
 ///
 /// Returns `None` if the URI does not start with `file://`.
 pub fn uri_to_path(uri: &str) -> Option<PathBuf> {
-    uri.strip_prefix("file://").map(PathBuf::from)
+    let path = uri.strip_prefix("file://")?;
+    url::Url::parse(uri)
+        .ok()
+        .and_then(|uri| uri.to_file_path().ok())
+        .or_else(|| Some(PathBuf::from(path)))
 }
 
 #[cfg(test)]

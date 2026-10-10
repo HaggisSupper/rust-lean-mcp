@@ -228,7 +228,7 @@ impl LeanLspClient {
         let init_params = json!({
             "processId": std::process::id() as i64,
             "capabilities": {},
-            "rootUri": format!("file://{}", project_path.display()),
+            "rootUri": path_to_uri(&project_path, ""),
             "rootPath": project_path.display().to_string(),
         });
         let resp = multiplexer
