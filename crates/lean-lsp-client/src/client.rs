@@ -45,6 +45,8 @@ pub enum LspClientError {
 /// All tool handlers work against `dyn LspClient`, and the test suite uses
 /// `MockLspClient` to verify behaviour without a real Lean server.
 #[cfg_attr(test, mockall::automock)]
+// async-trait adds must_use to futures, which are already must_use.
+#[allow(clippy::double_must_use)]
 #[async_trait]
 pub trait LspClient: Send + Sync {
     /// Get the project path this client is connected to.
