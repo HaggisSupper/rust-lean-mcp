@@ -1544,7 +1544,7 @@ impl AppContext {
 // ServerHandler implementation
 // ---------------------------------------------------------------------------
 
-#[tool_handler]
+#[tool_handler(router = self.tool_router)]
 impl rmcp::ServerHandler for AppContext {
     fn get_info(&self) -> InitializeResult {
         InitializeResult::new(
