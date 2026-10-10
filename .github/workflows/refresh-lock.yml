@@ -1,0 +1,16 @@
+name: Refresh Dependency Lock
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo update
+      - uses: actions/upload-artifact@v4
+        with:
+          name: refreshed-lock
+          path: Cargo.lock
